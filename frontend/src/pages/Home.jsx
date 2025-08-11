@@ -18,7 +18,13 @@ const Home = () => {
     axios
       .get(`${import.meta.env.VITE_BASE_URL}`)
       .then((response) => {
-        setBooks(response.data.data);
+        // Pastikan response.data.data adalah array
+        if (response.data && Array.isArray(response.data.data)) {
+          setBooks(response.data.data);
+        } else {
+          console.error("Struktur data dari API tidak sesuai:", response.data);
+          setBooks([]); // Set ke array kosong untuk mencegah crash
+        }
         setLoading(false);
       })
       .catch((error) => {
