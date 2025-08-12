@@ -21,7 +21,7 @@ const connectToDatabase = async () => {
 
   // Jika tidak, buat koneksi baru
   try {
-    const db = await mongoose.connect(process.env.MONGODB_URL);
+    const db = await mongoose.connect(process.env.MONGODB_URI);
     cachedDb = db; // Simpan koneksi ke cache
     console.log('New database connection established');
     return db;
