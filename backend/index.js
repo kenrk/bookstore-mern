@@ -9,36 +9,15 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Caching koneksi database
-let cachedDb = null;
+mongoose
+  .connect(process.env.MONGODB_URL)
+  .then(() => {
+    console.log('App connected to database');
+  })
+  .catch((error) => {
+    console.log('MongoDB connection error:', error);
+  });
 
-const connectToDatabase = async () => {
-  if (cachedDb) {
-    return cachedDb;
-  }
-  try {
-    const db = await mongoose.connect(process.env.MONGODB_URL);
-    console.log('New database connection established');
-    cachedDb = db;
-    return db;
-  } catch (error) {
-    console.error('Database connection error:', error);
-    throw error; // Lempar error agar Vercel tahu ada masalah
-  }
-};
-
-// Middleware untuk memastikan DB terhubung sebelum menangani request
-app.use(async (req, res, next) => {
-  try {
-    await connectToDatabase();
-    next();
-  } catch (error) {
-    res.status(500).send({ message: 'Failed to connect to the database' });
-  }
-});
-
-
-// Routes
 app.get('/', (request, response) => {
   return response.status(200).send('Welcome to MERN Stack Bookstore');
 });
